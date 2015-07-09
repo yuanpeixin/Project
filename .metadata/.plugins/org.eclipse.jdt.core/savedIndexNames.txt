@@ -1,0 +1,6 @@
+INDEX VERSION 1.127+C:\Users\py100x\Desktop\workspace\.metadata\.plugins\org.eclipse.jdt.core
+3077018491.index
+4037443296.index
+770845436.index
+1284074322.index
+1114806994.index
