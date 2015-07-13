@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.hangout.MainActivity" >
 
+    <item android:id="@+id/action_search"
+          android:icon="@drawable/icon_036"
+          android:title="@string/action_search"
+          android:showAsAction="always" />"
+    
+    
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
