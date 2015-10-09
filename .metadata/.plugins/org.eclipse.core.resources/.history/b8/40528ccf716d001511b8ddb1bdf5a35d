@@ -1,0 +1,207 @@
+package com.peixin.gameforum;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+
+public class ReadComments extends ListActivity {
+
+	// Progress Dialog
+	private ProgressDialog pDialog;
+
+	// testing on Emulator:
+	private static final String READ_TOPICS_URL = "http://yuanpeixin.com/gameforum/topics.php";
+
+	// JSON IDS:
+	private static final String TAG_SUCCESS = "success";
+	private static final String TAG_TITLE = "title";
+	private static final String TAG_POSTS = "posts";
+	private static final String TAG_POST_ID = "post_id";
+	private static final String TAG_USERNAME = "username";
+	// it's important to note that the message is both in the parent branch of
+	// our JSON tree that displays a "Post Available" or a "No Post Available"
+	// message,
+	// and there is also a message for each individual post, listed under the
+	// "posts"
+	// category, that displays what the user typed as their message.
+
+	// An array of all of our comments
+	private JSONArray mComments = null;
+	// manages all of our comments in a list.
+	private ArrayList<HashMap<String, String>> mCommentList;
+
+	private String gameName;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.read_comments);
+
+		TextView tv = (TextView) findViewById(R.id.rcGame);
+		
+		gameName = StoredData.getInstance().getGame();
+		tv.setText(gameName);
+		GameList.mp.start();
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		GameList.mp.pause();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		// loading the comments via AsyncTask
+		new LoadComments().execute();
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		// TODO Auto-generated method stub
+		super.onListItemClick(l, v, position, id);
+
+		String topic = ((TextView) v.findViewById(R.id.scTitle)).getText().toString();
+		StoredData.getInstance().setTitle(topic);
+		Intent i = new Intent(this, ReadReplies.class);
+		startActivity(i);
+	}
+
+	public void addComment(View v) {
+		Intent i;
+		boolean isLog = StoredData.getInstance().getLogin();
+		if (isLog) {
+			i = new Intent(this, AddComment.class);
+		} else {
+			i = new Intent(this, Login.class);
+		}
+		startActivity(i);
+	}
+
+	public void Setting(View v) {
+		Intent i = new Intent(this, Setting.class);
+		startActivity(i);
+	}
+
+	/**
+	 * Retrieves json data of topics
+	 */
+	public void updateJSONdata() {
+
+		mCommentList = new ArrayList<HashMap<String, String>>();
+
+		// Bro, it's time to power up the J parser
+		JSONParser jParser = new JSONParser();
+
+		try {
+
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("game", gameName));
+
+			Log.d("request!", "starting");
+			// getting product details by making HTTP request
+			JSONObject json = jParser.makeHttpRequest(READ_TOPICS_URL, "POST", params);
+
+			mComments = json.getJSONArray(TAG_POSTS);
+
+			// looping through all posts according to the json object returned
+			for (int i = 0; i < mComments.length(); i++) {
+				JSONObject c = mComments.getJSONObject(i);
+
+				// gets the content of each tag
+				String title = c.getString(TAG_TITLE);
+				String username = c.getString(TAG_USERNAME);
+
+				// creating new HashMap
+				HashMap<String, String> map = new HashMap<String, String>();
+
+				map.put(TAG_TITLE, title);
+				map.put(TAG_USERNAME, username);
+
+				// adding HashList to ArrayList
+				mCommentList.add(map);
+
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Inserts the parsed data into our listview
+	 */
+	private void updateList() {
+
+		ListAdapter adapter = new SimpleAdapter(this, mCommentList, R.layout.single_comment,
+				new String[] { TAG_TITLE, TAG_USERNAME }, new int[] { R.id.scTitle, R.id.scUsername });
+
+		setListAdapter(adapter);
+
+	}
+
+	public class LoadComments extends AsyncTask<Void, Void, Boolean> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(ReadComments.this);
+			pDialog.setMessage("Loading Topic...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... arg0) {
+
+			updateJSONdata();
+			return null;
+
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+
+			pDialog.dismiss();
+			updateList();
+		}
+	}
+}

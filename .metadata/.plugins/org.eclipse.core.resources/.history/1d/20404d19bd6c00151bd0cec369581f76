@@ -1,0 +1,15 @@
+package com.peixin.gameforum;
+
+import android.app.Application;
+
+public class CheckLogin extends Application{
+	private boolean isLog = false;
+	
+	public boolean getLogin(){
+		return isLog;
+	}
+	
+	public void setLogin(boolean value){
+		isLog = value;
+	}
+}

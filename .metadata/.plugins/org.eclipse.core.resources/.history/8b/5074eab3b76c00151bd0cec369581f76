@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="10" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="8" >
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@drawable/blue_gradient" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/arET"
+            android:layout_alignParentLeft="true"
+            android:text="Message"
+            android:textColor="#333"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/arET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/arSubmit"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:text="Enter Here" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/arSubmit"
+            style="@style/WhiteText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/black_button"
+            android:text="Submit" />
+    </RelativeLayout>
+
+</LinearLayout>

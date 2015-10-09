@@ -1,0 +1,75 @@
+package com.peixin.gameforum;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.media.AudioManager;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+
+public class Setting extends Activity implements OnSeekBarChangeListener {
+
+	AudioManager am;
+	SeekBar sb;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.setting);
+
+		sb = (SeekBar) findViewById(R.id.seekBar1);
+		CheckBox cb = (CheckBox) findViewById(R.id.sCheckBox);
+		
+		am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int curV = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+		int maxV = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+		sb.setMax(maxV);
+		sb.setProgress(curV);
+		sb.setOnSeekBarChangeListener(this);
+		
+		cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+		       @Override
+		       public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+		    	   if(!isChecked){
+		    		   SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(Setting.this);
+		    		   Editor edit = sp.edit();
+						edit.putString("username", username);
+						edit.commit();
+		    	   }
+		       }
+		   }
+		);   
+
+	}
+
+	@Override
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+		// TODO Auto-generated method stub
+		am.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+	}
+
+	@Override
+	public void onStartTrackingTouch(SeekBar seekBar) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onStopTrackingTouch(SeekBar seekBar) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

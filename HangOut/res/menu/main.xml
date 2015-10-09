@@ -6,7 +6,7 @@
     <item android:id="@+id/action_search"
           android:icon="@drawable/icon_036"
           android:title="@string/action_search"
-          android:showAsAction="always" />"
+          android:showAsAction="always" />
     
     
     <item

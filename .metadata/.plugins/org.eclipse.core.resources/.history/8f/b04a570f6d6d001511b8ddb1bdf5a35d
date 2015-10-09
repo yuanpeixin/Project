@@ -1,0 +1,20 @@
+package com.peixin.gameforum;
+
+public class CheckLogin {
+	private boolean isLog = false;
+
+	private static final CheckLogin holder = new CheckLogin();
+
+	public static CheckLogin getInstance() {
+		return holder;
+	}
+
+	public boolean getLogin() {
+		return isLog;
+	}
+
+	public void setLogin(boolean value) {
+		this.isLog = value;
+	}
+
+}

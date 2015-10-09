@@ -8,5 +8,7 @@
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
     <string name="action_search">search</string>
+    <string name="title_activity_test">Test</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3673983865885023/8136596596 </string>
 
 </resources>

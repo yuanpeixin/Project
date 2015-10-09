@@ -1,13 +1,13 @@
 package com.example.hangout;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import com.peixin.hangout.R;
 
-public class DisplayMessageActivity extends ActionBarActivity {
+public class DisplayMessageActivity extends Activity{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
